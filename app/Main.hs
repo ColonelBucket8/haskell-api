@@ -18,11 +18,18 @@ main = do
 
             json newUserId
 
+            -- IO operations like getLine, putStrLn only work inside
+            -- the IO monad. Using them inside any other monad
+            -- will trigger a type error
+            liftIO . print $ "User with id " ++ show newUserId ++ " successfully created" 
+
         delete "/users/:userId" $ do
 
             userId <- param "userId"
 
             liftIO $ Db.deleteUser db userId
+
+            liftIO . print $ "User with id " ++ show userId ++ " successfully removed from the system"
 
 createUser :: Db.UserStore -> CreateUserRequest -> IO Int
 createUser db CreateUserRequest { name = uname, password = pwd } = Db.insertUser db dbusr
