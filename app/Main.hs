@@ -4,12 +4,17 @@ import Control.Monad.IO.Class
 import qualified Db
 import User (CreateUserRequest (..))
 import Web.Scotty
+import Data.Monoid (mconcat)
 
 main :: IO ()
 main = do
     db <- Db.mkDb
 
     scotty 8080 $ do
+
+        get "/users/:name" $ do
+            userName <- param "name"
+            html $ mconcat ["<h1>Hi, ", userName, "!</h1>"]  
 
         post "/users" $ do
             createUserReq <- jsonData
